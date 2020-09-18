@@ -76,4 +76,10 @@ class Product extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Order::className(), ['id' => 'order_id'])->viaTable('{{%products_in_order}}', ['product_id' => 'id']);
     }
+
+    public function save($runValidation = true, $attributeNames = null)
+    {
+        $this->updated_at = date('Y-m-d H:i:s');
+        return parent::save($runValidation, $attributeNames);
+    }
 }
