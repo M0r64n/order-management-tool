@@ -17,6 +17,16 @@ use Yii;
  */
 class Order extends \yii\db\ActiveRecord
 {
+    const STATUS_NEW = 0;
+    const STATUS_SHIPPING = 1;
+    const STATUS_CLOSED = 2;
+
+    const STATUS_NAMES = [
+        0 => 'Формирование',
+        1 => 'Отгрузка',
+        2 => 'Закрыт',
+    ];
+
     /**
      * {@inheritdoc}
      */
@@ -43,10 +53,11 @@ class Order extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'id' => 'Номер заказа',
             'created_at' => 'Создан',
             'updated_at' => 'Обновлён',
             'status' => 'Статус',
+            'statusText' => 'Статус',
         ];
     }
 
@@ -68,5 +79,21 @@ class Order extends \yii\db\ActiveRecord
     public function getProducts()
     {
         return $this->hasMany(Product::className(), ['id' => 'product_id'])->viaTable('{{%products_in_order}}', ['order_id' => 'id']);
+    }
+
+    public function getStatusText(): ?string
+    {
+        return self::STATUS_NAMES[$this->status];
+    }
+
+    public function setStatusText(string $value)
+    {
+        $this->status = array_flip(self::STATUS_NAMES)[$value];
+    }
+
+    public function save($runValidation = true, $attributeNames = null)
+    {
+        $this->updated_at = date('Y-m-d H:i:s');
+        parent::save($runValidation, $attributeNames);
     }
 }
