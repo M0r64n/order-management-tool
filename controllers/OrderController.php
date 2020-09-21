@@ -2,9 +2,12 @@
 
 namespace app\controllers;
 
+use app\models\Product;
+use app\models\ProductsInOrder;
 use Yii;
 use app\models\Order;
 use app\models\OrderSearch;
+use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -21,7 +24,7 @@ class OrderController extends Controller
     {
         return [
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],
@@ -52,8 +55,21 @@ class OrderController extends Controller
      */
     public function actionView($id)
     {
+        $model = $this->findModel($id);
+        $products = Product::find()->all();
+        $relatedProducts = new ActiveDataProvider([
+            'query' => ProductsInOrder::find()
+            ->where(['order_id' => $id])
+            ->with('product')
+        ]);
+        $relation = new ProductsInOrder();
+        $relation->order_id = $model->id;
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'newRelation' => $relation,
+            'products' => $products,
+            'relatedProducts' => $relatedProducts,
         ]);
     }
 
@@ -84,6 +100,31 @@ class OrderController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    /**
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionUpdate($id)
+    {
+        $model = $this->findModel($id);
+        if (isset($_POST['hasEditable'])) {
+            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            if ($model->load($_POST) && $model->save()) {
+
+                $value = $model->status;
+                return ['output'=>$value, 'message'=>''];
+            }
+            else {
+                return ['output'=>'', 'message'=>''];
+            }
+        }
+
+
+
+        return $this->redirect(['view', 'id' => $id]);
     }
 
     /**
