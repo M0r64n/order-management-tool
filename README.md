@@ -8,7 +8,7 @@ Simple order manager made as a test task.
 
 1. Run `composer install.`
 
-1. Configure set your db settings in `config/db.php` file.
+1. Set your db params in `config/db.php` file.
 
 1. Run `yii migrate/up`.
 
