@@ -32,7 +32,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'created_at',
             'updated_at',
             [
-                'attribute'=>'statusText',
+                'attribute'=>'status',
+                'value' => 'statusText',
                 'filter'=>Order::STATUS_NAMES,
             ],
 
