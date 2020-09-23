@@ -82,6 +82,11 @@ class ProductsInOrder extends \yii\db\ActiveRecord
         return $this->hasOne(Order::className(), ['id' => 'order_id']);
     }
 
+    public function getTotalPrice()
+    {
+        return $this->quantity * $this->product->price;
+    }
+
     public function beforeSave($insert)
     {
         if (!parent::beforeSave($insert)) {

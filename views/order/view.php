@@ -54,7 +54,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]
                 ]),
                 'format' => 'raw'
-            ]
+            ],
+            [
+                'attribute' => 'totalPrice',
+                'label' => 'Общая сумма заказа'
+            ],
         ],
     ]) ?>
 
@@ -87,6 +91,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             'product.name',
             'quantity',
+            [
+                'attribute' => 'totalPrice',
+                'label' => 'Сумма'
+            ],
             [
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '{update} {delete}',

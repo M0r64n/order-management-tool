@@ -86,10 +86,10 @@ class Order extends \yii\db\ActiveRecord
         return self::STATUS_NAMES[$this->status] ?? null;
     }
 
-//    public function setStatusText(string $value)
-//    {
-//        $this->status = array_flip(self::STATUS_NAMES)[$value];
-//    }
+    public function getTotalPrice()
+    {
+        return array_sum(array_column($this->productsInOrders, 'totalPrice'));
+    }
 
     public function save($runValidation = true, $attributeNames = null)
     {
