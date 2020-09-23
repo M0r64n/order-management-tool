@@ -31,7 +31,18 @@ class ProductsInOrder extends \yii\db\ActiveRecord
     {
         return [
             [['product_id', 'order_id', 'quantity'], 'required'],
-            [['product_id', 'order_id', 'quantity'], 'integer'],
+            [['product_id', 'order_id'], 'integer'],
+            [
+                'quantity',
+                'integer',
+                'min' => 1,
+                'when' => function (ProductsInOrder $model) {
+                    if ($model->quantity > $model->product->quantity) {
+                        $this->addError('quantity', "Нельзя добавить в заказ больше товара, чем находится на складе ({$model->product->quantity}).");
+                        return false;
+                    };
+                    return true;
+                }],
             [['product_id', 'order_id'], 'unique', 'targetAttribute' => ['product_id', 'order_id']],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::className(), 'targetAttribute' => ['order_id' => 'id']],
