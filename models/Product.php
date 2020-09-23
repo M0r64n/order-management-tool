@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\web\MethodNotAllowedHttpException;
 
 /**
  * This is the model class for table "{{%products}}".
@@ -81,5 +82,22 @@ class Product extends \yii\db\ActiveRecord
     {
         $this->updated_at = date('Y-m-d H:i:s');
         return parent::save($runValidation, $attributeNames);
+    }
+
+    /**
+     * @return bool
+     * @throws MethodNotAllowedHttpException
+     */
+    public function beforeDelete()
+    {
+        if (!parent::beforeDelete()) {
+            return false;
+        }
+
+        if ($this->orders) {
+            throw new MethodNotAllowedHttpException("Товар \"{$this->name}\" не может быть удалён, так как он используется в заказах.");
+        }
+
+        return true;
     }
 }
