@@ -58,6 +58,8 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]) ?>
 
+    <?php if ($model->status !== Order::STATUS_CLOSED): ?>
+
     <h2>Добавить товар</h2>
 
     <?php $form = ActiveForm::begin(['action' => '/products-in-order/add']); ?>
@@ -75,6 +77,8 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <?php ActiveForm::end(); ?>
+
+    <?php endif; ?>
 
     <h2>Товары</h2>
 

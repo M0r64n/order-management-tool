@@ -25,7 +25,7 @@ class ProductsInOrderController extends Controller
 
         $model->save();
 
-        return $this->redirect(['order/view', 'id' => $model->order_id]);
+        return Yii::$app->runAction('order/view', ['id' => $model->order_id, 'relation' => $model]);
     }
 
     /**

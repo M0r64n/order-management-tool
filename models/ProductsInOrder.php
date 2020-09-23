@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\web\ForbiddenHttpException;
 
 /**
  * This is the model class for table "{{%products_in_order}}".
@@ -79,5 +80,31 @@ class ProductsInOrder extends \yii\db\ActiveRecord
     public function getOrder()
     {
         return $this->hasOne(Order::className(), ['id' => 'order_id']);
+    }
+
+    public function beforeSave($insert)
+    {
+        if (!parent::beforeSave($insert)) {
+            return false;
+        }
+
+        if ($this->order->status === Order::STATUS_CLOSED) {
+            throw new ForbiddenHttpException('Вы не можете редактировать закрытый заказ.');
+        }
+
+        return true;
+    }
+
+    public function beforeDelete()
+    {
+        if (!parent::beforeDelete()) {
+            return false;
+        }
+
+        if ($this->order->status === Order::STATUS_CLOSED) {
+            throw new ForbiddenHttpException('Вы не можете редактировать закрытый заказ.');
+        }
+
+        return true;
     }
 }

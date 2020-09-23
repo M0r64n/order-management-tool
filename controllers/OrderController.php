@@ -53,7 +53,7 @@ class OrderController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView($id, $relation = null)
     {
         $model = $this->findModel($id);
         $products = Product::find()->all();
@@ -62,7 +62,7 @@ class OrderController extends Controller
             ->where(['order_id' => $id])
             ->with('product')
         ]);
-        $relation = new ProductsInOrder();
+        $relation = $relation ?? new ProductsInOrder();
         $relation->order_id = $model->id;
 
         return $this->render('view', [
